@@ -16,7 +16,7 @@ class Config
     /** @var Config $instance */
     public static $instance;
 
-    /** @var array $config */
+    /** @var array $configItems */
     private $configItems = [];
 
     /**
