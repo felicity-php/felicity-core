@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @author TJ Draper <tj@buzzingpixel.com>
+ * @copyright 2017 BuzzingPixel, LLC
+ * @license Apache-2.0
+ */
+
 namespace felicity\core\services\config;
 
 /**
@@ -14,11 +20,24 @@ class Config
     private $configItems = [];
 
     /**
-     * Bootstraps the config class
+     * Bootstraps the config class instance
      */
     public function bootstrap()
     {
-        self::$instance = $this;
+        self::getInstance();
+    }
+
+    /**
+     * Gets the config class instance
+     * @return Config Singleton
+     */
+    public static function getInstance() : Config
+    {
+        if (! self::$instance) {
+            self::$instance = new self;
+        }
+
+        return self::$instance;
     }
 
     /**
@@ -34,6 +53,17 @@ class Config
     }
 
     /**
+     * A static method to set a config item
+     * @param string $key
+     * @param mixed $val
+     * @return Config
+     */
+    public static function setItem(string $key, $val) : Config
+    {
+        return self::getInstance()->set($key, $val);
+    }
+
+    /**
      * Gets a config item
      * @param string $key
      * @return mixed
@@ -41,6 +71,16 @@ class Config
     public function get(string $key)
     {
         return $this->getArrayDot($this->configItems, $key);
+    }
+
+    /**
+     * A static method to get a config item
+     * @param string $key
+     * @return mixed
+     */
+    public static function getItem(string $key)
+    {
+        return self::getInstance()->get($key);
     }
 
     /**

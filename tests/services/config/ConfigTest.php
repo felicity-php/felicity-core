@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @author TJ Draper <tj@buzzingpixel.com>
+ * @copyright 2017 BuzzingPixel, LLC
+ * @license Apache-2.0
+ */
+
 namespace tests\services\config;
 
 use PHPUnit\Framework\TestCase;
@@ -45,6 +51,33 @@ class ConfigTest extends TestCase
             [
                 'arrayTest' => true,
             ]
+        );
+
+        self::assertEquals(
+            Config::$instance->get('bootstrapFileSet'),
+            'bootstrapFileSetTest'
+        );
+
+        self::assertEquals(
+            Config::$instance->get('test1'),
+            'test1value'
+        );
+
+        self::assertEquals(
+            Config::$instance->get('test2'),
+            'test2value'
+        );
+
+        self::assertNull(Config::$instance->get('test3'));
+
+        self::assertEquals(
+            Config::$instance->get('testRecursive1'),
+            'testRecursive1value'
+        );
+
+        self::assertEquals(
+            Config::$instance->get('testRecursive2'),
+            'testRecursive2value'
         );
     }
 }

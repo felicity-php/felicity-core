@@ -1,0 +1,23 @@
+{
+    "extra": {
+        "bootstrap": [
+            {
+                "type": "classMethod",
+                "class": "\\felicity\\core\\services\\config\\Config",
+                "method": "bootstrap"
+            },
+            {
+                "type": "file",
+                "filePath": "tests/testBootstrapFileInclude.php"
+            },
+            {
+                "type": "directory",
+                "directoryPath": "tests/testBootstrapDirectoryInclude"
+            },
+            {
+                "type": "directoryRecursive",
+                "directoryPath": "tests/testBootstrapDirectoryRecursive"
+            }
+        ]
+    }
+}
