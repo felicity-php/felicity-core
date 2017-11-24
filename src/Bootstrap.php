@@ -93,7 +93,17 @@ class Bootstrap
             return $this;
         }
 
-        foreach ($json['extra']['bootstrap'] as $bootstrapArrayItem) {
+        return $this->processBootstrapArray($json['extra']['bootstrap']);
+    }
+
+    /**
+     * Processes bootstrap array
+     * @param array $bootstrapArray
+     * @return self
+     */
+    public function processBootstrapArray(array $bootstrapArray) : Bootstrap
+    {
+        foreach ($bootstrapArray as $bootstrapArrayItem) {
             $this->processBootstrapArrayItem($bootstrapArrayItem);
         }
 
