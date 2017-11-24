@@ -2,6 +2,7 @@
     "name": "felicity-php/felicity-core",
     "version": "0.0.1",
     "description": "The Felicity framework core. Provides configuration and routing.",
+    "license": "Apache-2.0",
     "authors": [
         {
             "name": "TJ Draper",
@@ -9,12 +10,15 @@
             "homepage": "https://buzzingpixel.com"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "Felicity\\": "src/"
+        }
+    },
     "require": {
         "roave/security-advisories": "dev-master"
     },
-    "autoload": {
-        "psr-4": {
-            "dev\\": "dev/"
-        }
+    "require-dev": {
+        "phpunit/phpunit": "^6.1"
     }
 }
