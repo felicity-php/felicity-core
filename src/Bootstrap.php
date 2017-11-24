@@ -120,6 +120,18 @@ class Bootstrap
             return;
         }
 
+        if (isset($bootstrapArrayItem['requestType'])) {
+            if (! \defined('REQUEST_TYPE') ||
+                $bootstrapArrayItem['requestType'] !== REQUEST_TYPE
+            ) {
+                return;
+            }
+
+            if ($bootstrapArrayItem['requestType'] !== REQUEST_TYPE) {
+                return;
+            }
+        }
+
         switch ($bootstrapArrayItem['type']) {
             case 'classMethod':
                 $this->processBootstrapClassMethod($bootstrapArrayItem);
