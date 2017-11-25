@@ -63,8 +63,60 @@ class UriService
         $uriParts = parse_url($uri);
 
         // Get the uri segments
-        $uriSegments = explode('/', ltrim($uriParts['path'], '/'));
+        $uriSegments = $this->stripUpToPhp(
+            explode('/', ltrim($uriParts['path'], '/'))
+        );
 
+        // Make sure the segments are clean
+        foreach ($uriSegments as $key => $segment) {
+            $uriSegments[$key] = $this->antiXSS->xss_clean($segment);
+        }
+
+        // Get the segment count
+        $segCount = \count($uriSegments);
+
+        // Set default page
+        $page = 1;
+
+        // Process pagination
+        if ($processPagination === true &&
+            \count($uriSegments) > 1 &&
+            \ctype_digit($uriSegments[$segCount - 1]) &&
+            (int) $uriSegments[$segCount - 1] > 1 &&
+            $uriSegments[$segCount - 2] === $paginationTrigger
+        ) {
+            $page = (int) $uriSegments[$segCount - 1];
+            unset(
+                $uriSegments[$segCount - 1],
+                $uriSegments[$segCount - 2]
+            );
+        }
+
+        // Prepare query
+        $queryRaw = $uriParts['query'] ?? '';
+        $queryRaw = $this->antiXSS->xss_clean($queryRaw);
+        $query = [];
+        parse_str($queryRaw, $query);
+
+        // Return the URI model
+        return new UriModel([
+            'raw' => $this->antiXSS->xss_clean($uriParts['path']),
+            'segments' => array_values($uriSegments),
+            'path' => implode('/', $uriSegments),
+            'queryRaw' => $queryRaw,
+            'query' => $query,
+            'page' => $page,
+            'requestMethod' => $requestMethod,
+        ]);
+    }
+
+    /**
+     * Strips path up to PHP
+     * @param array $uriSegments
+     * @return array
+     */
+    private function stripUpToPhp(array $uriSegments) : array
+    {
         $startingSegment = false;
 
         // Loop through to find a .php segment
@@ -93,48 +145,6 @@ class UriService
         }
 
         // Reset the segments array
-        $uriSegments = array_values($uriSegments);
-
-        // Make sure the segments are clean
-        foreach ($uriSegments as $key => $segment) {
-            $uriSegments[$key] = $this->antiXSS->xss_clean($segment);
-        }
-
-        // Get the segment count
-        $segCount = count($uriSegments);
-
-        // Set default page
-        $page = 1;
-
-        // Process pagination
-        if ($processPagination === true &&
-            \count($uriSegments) > 1 &&
-            ctype_digit($uriSegments[$segCount - 1]) &&
-            (int) $uriSegments[$segCount - 1] > 1 &&
-            $uriSegments[$segCount - 2] === $paginationTrigger
-        ) {
-            $page = (int) $uriSegments[$segCount - 1];
-            unset(
-                $uriSegments[$segCount - 1],
-                $uriSegments[$segCount - 2]
-            );
-        }
-
-        // Prepare query
-        $queryRaw = $uriParts['query'] ?? '';
-        $queryRaw = $this->antiXSS->xss_clean($queryRaw);
-        $query = [];
-        parse_str($queryRaw, $query);
-
-        // Return the URI model
-        return new UriModel([
-            'raw' => $this->antiXSS->xss_clean($uriParts['path']),
-            'segments' => array_values($uriSegments),
-            'path' => implode('/', $uriSegments),
-            'queryRaw' => $queryRaw,
-            'query' => $query,
-            'page' => $page,
-            'requestMethod' => $requestMethod,
-        ]);
+        return array_values($uriSegments);
     }
 }
