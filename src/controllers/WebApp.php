@@ -8,8 +8,10 @@
 
 namespace felicity\core\controllers;
 
+use Exception;
 use ReflectionException;
 use felicity\core\FelicityCore;
+use felicity\core\exceptions\HttpException;
 
 /**
  * Class WebApp
@@ -19,19 +21,42 @@ class WebApp
     /**
      * Runs the application
      * @throws ReflectionException
+     * @throws HttpException
      */
     public function run()
     {
         ob_start();
 
+        try {
+            $this->innerRun();
+        } catch (Exception $e) {
+            if ($e instanceof HttpException) {
+                $e->render();
+                return;
+            }
+
+            (new HttpException($e->getMessage(), $e->getCode()))->render();
+        }
+
+        ob_end_flush();
+    }
+
+    /**
+     * Runs internal run function so we can try/catch
+     * @throws ReflectionException
+     * @throws HttpException
+     */
+    private function innerRun()
+    {
         $routingModel = FelicityCore::getRoutingService()->runUri(
             FelicityCore::getUriModel()
         );
 
         if ($routingModel->responseCode !== 200) {
-            // TODO: throw to an http error thrower or something
-            var_dump('TODO');
-            die;
+            throw new HttpException(
+                $routingModel->errorMessage,
+                $routingModel->responseCode
+            );
         }
 
         $hasOutput = false;
@@ -48,11 +73,10 @@ class WebApp
         }
 
         if (! $hasOutput) {
-            // TODO: throw to an http 404 error thrower or something
-            var_dump('TODO');
-            die;
+            throw new HttpException(
+                $routingModel->errorMessage,
+                $routingModel->responseCode
+            );
         }
-
-        ob_end_flush();
     }
 }

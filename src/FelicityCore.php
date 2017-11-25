@@ -22,6 +22,15 @@ use felicity\core\services\request\UriService;
 class FelicityCore
 {
     /**
+     * Get's the core src dir
+     * @return string
+     */
+    public static function getCoreSrcDir() : string
+    {
+        return __DIR__;
+    }
+
+    /**
      * Gets the config instance
      * @return Config
      */
