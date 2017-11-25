@@ -10,10 +10,13 @@ namespace felicity\core;
 
 use RegexIterator;
 use ReflectionClass;
+use ReflectionException;
 use RecursiveRegexIterator;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
+use felicity\events\EventManager;
 use Composer\Autoload\ClassLoader;
+use felicity\events\models\EventModel;
 
 /**
  * Class Bootstrap
@@ -25,7 +28,7 @@ class Bootstrap
 
     /**
      * Bootstrap constructor
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function __construct()
     {
@@ -38,9 +41,14 @@ class Bootstrap
     /**
      * Runs bootstrap
      * @return self
+     * @throws ReflectionException
      */
     public function run() : Bootstrap
     {
+        EventManager::call('Felicity_Bootstrap_BeforeRun', new EventModel([
+            'sender' => $this,
+        ]));
+
         $projectComposer = "{$this->projectRoot}/composer.json";
 
         if (file_exists($projectComposer)) {
@@ -70,6 +78,10 @@ class Bootstrap
                 }
             }
         }
+
+        EventManager::call('Felicity_Bootstrap_AfterRun', new EventModel([
+            'sender' => $this,
+        ]));
 
         return $this;
     }

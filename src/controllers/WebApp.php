@@ -11,6 +11,8 @@ namespace felicity\core\controllers;
 use Exception;
 use ReflectionException;
 use felicity\core\FelicityCore;
+use felicity\events\EventManager;
+use felicity\events\models\EventModel;
 use felicity\core\exceptions\HttpException;
 
 /**
@@ -25,11 +27,28 @@ class WebApp
      */
     public function run()
     {
+        EventManager::call('Felicity_WebApp_BeforeRun', new EventModel([
+            'sender' => $this,
+        ]));
+
         ob_start();
 
         try {
             $this->innerRun();
         } catch (Exception $e) {
+            $eventModel = new EventModel([
+                'sender' => $this,
+                'params' => [
+                    'exception' => $e,
+                ],
+            ]);
+
+            EventManager::call('Felicity_WebApp_Exception', $eventModel);
+
+            if (! $eventModel->performAction) {
+                return;
+            }
+
             if ($e instanceof HttpException) {
                 $e->render();
                 return;
@@ -39,6 +58,10 @@ class WebApp
         }
 
         ob_end_flush();
+
+        EventManager::call('Felicity_WebApp_AfterRun', new EventModel([
+            'sender' => $this,
+        ]));
     }
 
     /**
@@ -51,6 +74,10 @@ class WebApp
         $routingModel = FelicityCore::getRoutingService()->runUri(
             FelicityCore::getUriModel()
         );
+
+        EventManager::call('Felicity_WebApp_AfterRouteMatching', new EventModel([
+            'sender' => $this,
+        ]));
 
         if ($routingModel->responseCode !== 200) {
             throw new HttpException(
