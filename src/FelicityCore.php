@@ -8,6 +8,7 @@
 
 namespace felicity\core;
 
+use voku\helper\AntiXSS;
 use felicity\core\services\config\Config;
 use felicity\core\services\config\Routing;
 use felicity\core\services\request\UriService;
@@ -48,7 +49,8 @@ class FelicityCore
         }
 
         $uriService = new UriService(
-            self::getConfig()
+            self::getConfig(),
+            new AntiXSS()
         );
 
         self::$uriModel = $uriService->getUriModel($_SERVER['REQUEST_URI']);

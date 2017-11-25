@@ -9,6 +9,7 @@
 namespace felicity\core\services\request;
 
 use ReflectionException;
+use voku\helper\AntiXSS;
 use felicity\core\models\UriModel;
 use felicity\core\services\config\Config;
 
@@ -20,13 +21,18 @@ class UriService
     /** @var Config $config */
     private $config;
 
+    /** @var AntiXSS $antiXSS */
+    private $antiXSS;
+
     /**
      * Uri constructor
      * @param Config $config
+     * @param AntiXSS $antiXSS
      */
-    public function __construct(Config $config)
+    public function __construct(Config $config, AntiXSS $antiXSS)
     {
         $this->config = $config;
+        $this->antiXSS = $antiXSS;
     }
 
     /**
@@ -85,6 +91,11 @@ class UriService
         // Reset the segments array
         $uriSegments = array_values($uriSegments);
 
+        // Make sure the segments are clean
+        foreach ($uriSegments as $key => $segment) {
+            $uriSegments[$key] = $this->antiXSS->xss_clean($segment);
+        }
+
         // Get the segment count
         $segCount = count($uriSegments);
 
@@ -107,12 +118,13 @@ class UriService
 
         // Prepare query
         $queryRaw = $uriParts['query'] ?? '';
+        $queryRaw = $this->antiXSS->xss_clean($queryRaw);
         $query = [];
         parse_str($queryRaw, $query);
 
         // Return the URI model
         return new UriModel([
-            'raw' => $uriParts['path'],
+            'raw' => $this->antiXSS->xss_clean($uriParts['path']),
             'segments' => array_values($uriSegments),
             'path' => implode('/', $uriSegments),
             'queryRaw' => $queryRaw,

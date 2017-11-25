@@ -8,6 +8,7 @@
 
 namespace tests\services\request;
 
+use voku\helper\AntiXSS;
 use PHPUnit\Framework\TestCase;
 use felicity\core\services\config\Config;
 use felicity\core\services\request\UriService;
@@ -22,7 +23,10 @@ class UriTest extends TestCase
      */
     public function testGetUriModel()
     {
-        $uriService = new UriService(Config::getInstance());
+        $uriService = new UriService(
+            Config::getInstance(),
+            new AntiXSS()
+        );
 
         $uriModel = $uriService->getUriModel('/testing/thing/');
 
