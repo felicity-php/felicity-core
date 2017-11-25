@@ -66,21 +66,23 @@ class Config
     /**
      * Gets a config item
      * @param string $key
+     * @param mixed $default
      * @return mixed
      */
-    public function get(string $key)
+    public function get(string $key, $default = null)
     {
-        return $this->getArrayDot($this->configItems, $key);
+        return $this->getArrayDot($this->configItems, $key) ?: $default;
     }
 
     /**
      * A static method to get a config item
      * @param string $key
+     * @param mixed $default
      * @return mixed
      */
-    public static function getItem(string $key)
+    public static function getItem(string $key, $default = null)
     {
-        return self::getInstance()->get($key);
+        return self::getInstance()->get($key, $default);
     }
 
     /**
