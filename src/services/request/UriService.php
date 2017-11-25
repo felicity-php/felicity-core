@@ -14,7 +14,7 @@ use felicity\core\models\UriModel;
 use felicity\core\services\config\Config;
 
 /**
- * Class Uri
+ * Class UriService
  */
 class UriService
 {
@@ -38,10 +38,11 @@ class UriService
     /**
      * Gets a URI model for the submitted URI
      * @param string $uri
+     * @param string $requestMethod
      * @return UriModel
      * @throws ReflectionException
      */
-    public function getUriModel(string $uri) : UriModel
+    public function getUriModel(string $uri, string $requestMethod = 'get') : UriModel
     {
         // Get config
 
@@ -54,6 +55,9 @@ class UriService
             'uri.pagination.trigger',
             'page'
         );
+
+        // Set request method
+        $requestMethod = strtolower($requestMethod);
 
         // Get the uri parts
         $uriParts = parse_url($uri);
@@ -130,6 +134,7 @@ class UriService
             'queryRaw' => $queryRaw,
             'query' => $query,
             'page' => $page,
+            'requestMethod' => $requestMethod,
         ]);
     }
 }

@@ -80,8 +80,7 @@ class Routing
         }
 
         foreach ($this->routes[$verb] as $route => $callback) {
-            $routeRegex = str_replace('/', '\/', $route);
-            preg_match('/^' . $routeRegex . '$/', $uri, $match);
+            preg_match('/^' . $route . '$/', $uri, $match);
 
             if (! $match) {
                 continue;

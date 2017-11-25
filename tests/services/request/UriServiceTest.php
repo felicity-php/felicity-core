@@ -16,7 +16,7 @@ use felicity\core\services\request\UriService;
 /**
  * Class UriTest
  */
-class UriTest extends TestCase
+class UriServiceTest extends TestCase
 {
     /**
      * Test the getUriModel method
@@ -41,6 +41,7 @@ class UriTest extends TestCase
                 'queryRaw' => '',
                 'query' => [],
                 'page' => 1,
+                'requestMethod' => 'get',
             ),
             $uriModel->asArray(true)
         );
@@ -60,6 +61,7 @@ class UriTest extends TestCase
                 'queryRaw' => '',
                 'query' => [],
                 'page' => 1,
+                'requestMethod' => 'get',
             ),
             $uriModel->asArray(true)
         );
@@ -79,6 +81,7 @@ class UriTest extends TestCase
                 'queryRaw' => '',
                 'query' => [],
                 'page' => 1,
+                'requestMethod' => 'get',
             ),
             $uriModel->asArray(true)
         );
@@ -105,6 +108,7 @@ class UriTest extends TestCase
                     ],
                 ],
                 'page' => 1,
+                'requestMethod' => 'get',
             ],
             $uriModel->asArray(true)
         );

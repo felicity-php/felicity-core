@@ -37,6 +37,9 @@ class UriModel extends Model
     /** @var int $page */
     public $page = 1;
 
+    /** @var string $requestMethod */
+    public $requestMethod = 'get';
+
     /**
      * Gets the specified segment
      * @param int $segment
@@ -124,6 +127,9 @@ class UriModel extends Model
             ],
             'page' => [
                 'class' => IntHandler::class,
+            ],
+            'requestMethod' => [
+                'class' => StringHandler::class,
             ],
         ];
     }
