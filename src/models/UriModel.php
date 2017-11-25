@@ -38,6 +38,70 @@ class UriModel extends Model
     public $page = 1;
 
     /**
+     * Gets the specified segment
+     * @param int $segment
+     * @return string|null
+     */
+    public function getSegment(int $segment)
+    {
+        $segment--;
+        return $this->segments[$segment] ?? null;
+    }
+
+    /**
+     * Gets the specified segment
+     * @param int $segment
+     * @return string|null
+     */
+    public function getSegmentZeroIndex(int $segment)
+    {
+        return $this->segments[$segment] ?? null;
+    }
+
+    /**
+     * Gets the last segment
+     * @return string
+     */
+    public function lastSegment() : string
+    {
+        return $this->segments ?
+            $this->segments[\count($this->segments) - 1] :
+            '';
+    }
+
+    /**
+     * Gets query item with dot syntax
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    public function getQueryItem(string $key, $default = null)
+    {
+        return $this->getArrayDot($this->query, $key) ?: $default;
+    }
+
+    /**
+     * Gets an array item from dot syntax
+     * @param array $arr
+     * @param string $path
+     * @return mixed
+     */
+    private function getArrayDot(array $arr, string $path)
+    {
+        $val = $arr;
+
+        foreach (explode('.', $path) as $step) {
+            if (! isset($val[$step])) {
+                return null;
+            }
+
+            $val = $val[$step];
+        }
+
+        return $val;
+    }
+
+    /**
      * @inheritdoc
      */
     protected function defineHandlers(): array

@@ -100,13 +100,35 @@ class UriTest extends TestCase
                 'query' => [
                     'test-key' => 'test-val',
                     'source' => [
-                        0 => 'google',
-                        1 => 'facebook',
+                        'google',
+                        'facebook',
                     ],
                 ],
                 'page' => 1,
             ],
             $uriModel->asArray(true)
         );
+
+        self::assertCount(3, $uriModel->segments);
+
+        self::assertEquals('test-val', $uriModel->getQueryItem('test-key'));
+
+        self::assertEquals('facebook', $uriModel->getQueryItem('source.1'));
+
+        self::assertEquals('segment-thing', $uriModel->getSegment(3));
+
+        self::assertEquals('segment-thing', $uriModel->getSegmentZeroIndex(2));
+
+        self::assertEquals('segment-thing', $uriModel->lastSegment());
+
+        $uriModel = $uriService->getUriModel(
+            'segment/another/page/2'
+        );
+
+        self::assertEquals('segment/another', $uriModel->path);
+
+        self::assertEquals('segment/another/page/2', $uriModel->raw);
+
+        self::assertEquals(2, $uriModel->page);
     }
 }
