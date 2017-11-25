@@ -29,7 +29,7 @@ class RoutingTest extends TestCase
 
         $routing = Routing::getInstance();
 
-        Routing::get('testing/(.*)?', $testFunction);
+        Routing::get('testing\/(.*)?', $testFunction);
 
         $dudMatch = $routing->getUriMatches('get', 'asdf/thing');
 
@@ -44,7 +44,7 @@ class RoutingTest extends TestCase
         foreach ($testFunctionMatch as $model) {
             /** @var MatchedRouteModel $model */
 
-            self::assertEquals('testing/(.*)?', $model->route);
+            self::assertEquals('testing\/(.*)?', $model->route);
 
             self::assertEquals($testFunction, $model->callback);
 
