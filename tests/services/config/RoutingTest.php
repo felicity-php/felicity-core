@@ -8,7 +8,9 @@
 
 namespace tests\services\config;
 
+use felicity\core\models\MatchedRouteModel;
 use PHPUnit\Framework\TestCase;
+use felicity\datamodel\ModelCollection;
 use felicity\core\services\config\Routing;
 
 /**
@@ -31,29 +33,41 @@ class RoutingTest extends TestCase
 
         $dudMatch = $routing->getUriMatches('get', 'asdf/thing');
 
-        self::assertInternalType('array', $dudMatch);
+        self::assertInstanceOf(ModelCollection::class, $dudMatch);
 
         self::assertEmpty($dudMatch);
 
         $testFunctionMatch = $routing->getUriMatches('get', 'testing/asdf');
 
-        self::assertEquals('testing/(.*)?', $testFunctionMatch[0]['route']);
+        self::assertCount(1, $testFunctionMatch);
 
-        self::assertEquals($testFunction, $testFunctionMatch[0]['callback']);
+        foreach ($testFunctionMatch as $model) {
+            /** @var MatchedRouteModel $model */
 
-        self::assertEquals('testFunction', $testFunctionMatch[0]['callback']());
+            self::assertEquals('testing/(.*)?', $model->route);
 
-        Routing::post('thing', [
-            $this,
-            'callableFunction'
-        ]);
+            self::assertEquals($testFunction, $model->callback);
+
+            self::assertEquals(
+                'testFunction',
+                \call_user_func($model->callback)
+            );
+        }
+
+        Routing::post('thing', [$this, 'callableFunction']);
 
         $newTest = Routing::getMatches('post', 'thing');
 
-        self::assertEquals(
-            'callableFunction',
-            \call_user_func($newTest[0]['callback'])
-        );
+        self::assertCount(1, $newTest);
+
+        foreach ($newTest as $model) {
+            /** @var MatchedRouteModel $model */
+
+            self::assertEquals(
+                'callableFunction',
+                \call_user_func($model->callback)
+            );
+        }
     }
 
     /**

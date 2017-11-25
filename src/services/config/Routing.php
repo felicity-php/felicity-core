@@ -8,6 +8,10 @@
 
 namespace felicity\core\services\config;
 
+use ReflectionException;
+use felicity\datamodel\ModelCollection;
+use felicity\core\models\MatchedRouteModel;
+
 /**
  * Class Config
  */
@@ -52,9 +56,10 @@ class Routing
      * Gets matching URIs
      * @param string $uri
      * @param string $verb
-     * @return mixed
+     * @return ModelCollection
+     * @throws ReflectionException
      */
-    public static function getMatches(string $verb, string $uri)
+    public static function getMatches(string $verb, string $uri) : ModelCollection
     {
         return self::getInstance()->getUriMatches($verb, $uri);
     }
@@ -63,15 +68,16 @@ class Routing
      * Gets matching URIs
      * @param string $uri
      * @param string $verb
-     * @return array
+     * @return ModelCollection
+     * @throws ReflectionException
      */
-    public function getUriMatches(string $verb, string $uri) : array
+    public function getUriMatches(string $verb, string $uri) : ModelCollection
     {
-        if (! isset($this->routes[$verb])) {
-            return [];
-        }
+        $matchedRoutes = new ModelCollection();
 
-        $matchedRoutes = [];
+        if (! isset($this->routes[$verb])) {
+            return $matchedRoutes;
+        }
 
         foreach ($this->routes[$verb] as $route => $callback) {
             $routeRegex = str_replace('/', '\/', $route);
@@ -81,11 +87,11 @@ class Routing
                 continue;
             }
 
-            $matchedRoutes[] = [
+            $matchedRoutes->addModel(new MatchedRouteModel([
                 'route' => $route,
                 'callback' => $callback,
                 'match' => $match,
-            ];
+            ]));
         }
 
         return $matchedRoutes;
