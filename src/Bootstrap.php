@@ -105,18 +105,22 @@ class Bootstrap
             return $this;
         }
 
-        return $this->processBootstrapArray($json['extra']['bootstrap']);
+        return $this->processBootstrapArray(
+            $json['extra']['bootstrap'],
+            \dirname($filePath)
+        );
     }
 
     /**
      * Processes bootstrap array
      * @param array $bootstrapArray
+     * @param string|null $root
      * @return self
      */
-    public function processBootstrapArray(array $bootstrapArray) : Bootstrap
+    public function processBootstrapArray(array $bootstrapArray, $root = null) : Bootstrap
     {
         foreach ($bootstrapArray as $bootstrapArrayItem) {
-            $this->processBootstrapArrayItem($bootstrapArrayItem);
+            $this->processBootstrapArrayItem($bootstrapArrayItem, $root);
         }
 
         return $this;
@@ -125,8 +129,9 @@ class Bootstrap
     /**
      * Processes a bootstrap array item
      * @param array $bootstrapArrayItem
+     * @param string|null $root
      */
-    private function processBootstrapArrayItem(array $bootstrapArrayItem)
+    private function processBootstrapArrayItem(array $bootstrapArrayItem, $root = null)
     {
         if (! isset($bootstrapArrayItem['type'])) {
             return;
@@ -149,13 +154,13 @@ class Bootstrap
                 $this->processBootstrapClassMethod($bootstrapArrayItem);
                 break;
             case 'file':
-                $this->processBootstrapFile($bootstrapArrayItem);
+                $this->processBootstrapFile($bootstrapArrayItem, $root);
                 break;
             case 'directory':
-                $this->processBootstrapDirectory($bootstrapArrayItem);
+                $this->processBootstrapDirectory($bootstrapArrayItem, $root);
                 break;
             case 'directoryRecursive':
-                $this->processBootstrapDirectoryRecursive($bootstrapArrayItem);
+                $this->processBootstrapDirectoryRecursive($bootstrapArrayItem, $root);
         }
     }
 
@@ -178,29 +183,35 @@ class Bootstrap
     /**
      * Processes a bootstrap array item type of file
      * @param array $bootstrapArrayItem
+     * @param string|null $root
      */
-    private function processBootstrapFile(array $bootstrapArrayItem)
+    private function processBootstrapFile(array $bootstrapArrayItem, $root = null)
     {
         if (! isset($bootstrapArrayItem['filePath'])) {
             return;
         }
 
-        include "{$this->projectRoot}/{$bootstrapArrayItem['filePath']}";
+        $root = $root ?? $this->projectRoot;
+
+        include "{$root}/{$bootstrapArrayItem['filePath']}";
     }
 
     /**
      * Processes a bootstrap array item type of directory
      * @param array $bootstrapArrayItem
+     * @param string|null $root
      */
-    private function processBootstrapDirectory(array $bootstrapArrayItem)
+    private function processBootstrapDirectory(array $bootstrapArrayItem, $root = null)
     {
         if (! isset($bootstrapArrayItem['directoryPath'])) {
             return;
         }
 
+        $root = $root ?? $this->projectRoot;
+
         $dir = rtrim($bootstrapArrayItem['directoryPath'], '/');
 
-        foreach (glob($this->projectRoot . "/{$dir}/*") as $file) {
+        foreach (glob($root . "/{$dir}/*") as $file) {
             if (! is_file($file) || is_dir($file)) {
                 continue;
             }
@@ -220,17 +231,21 @@ class Bootstrap
     /**
      * Processes a bootstrap array item type of directoryRecursive
      * @param array $bootstrapArrayItem
+     * @param string|null $root
      */
     private function processBootstrapDirectoryRecursive(
-        array $bootstrapArrayItem
+        array $bootstrapArrayItem,
+        $root = null
     ) {
         if (! isset($bootstrapArrayItem['directoryPath'])) {
             return;
         }
 
+        $root = $root ?? $this->projectRoot;
+
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator(
-                $this->projectRoot . '/' . $bootstrapArrayItem['directoryPath']
+                $root . '/' . $bootstrapArrayItem['directoryPath']
             )
         );
 

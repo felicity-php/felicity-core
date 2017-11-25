@@ -8,15 +8,15 @@
             },
             {
                 "type": "file",
-                "filePath": "tests/testBootstrapFileInclude.php"
+                "filePath": "testBootstrapFileInclude.php"
             },
             {
                 "type": "directory",
-                "directoryPath": "tests/testBootstrapDirectoryInclude"
+                "directoryPath": "testBootstrapDirectoryInclude"
             },
             {
                 "type": "directoryRecursive",
-                "directoryPath": "tests/testBootstrapDirectoryRecursive"
+                "directoryPath": "testBootstrapDirectoryRecursive"
             }
         ]
     }
