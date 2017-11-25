@@ -8,13 +8,13 @@
 
 namespace felicity\core;
 
-use felicity\core\models\UriModel;
-use felicity\core\services\request\RoutingService;
 use ReflectionException;
 use voku\helper\AntiXSS;
+use felicity\core\models\UriModel;
 use felicity\core\services\config\Config;
 use felicity\core\services\config\Routing;
 use felicity\core\services\request\UriService;
+use felicity\core\services\request\RoutingService;
 
 /**
  * Class FelicityCore
