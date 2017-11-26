@@ -9,8 +9,8 @@
 namespace tests\services\request;
 
 use voku\helper\AntiXSS;
+use felicity\config\Config;
 use PHPUnit\Framework\TestCase;
-use felicity\core\services\config\Config;
 use felicity\core\services\request\UriService;
 
 /**

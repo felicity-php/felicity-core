@@ -6,7 +6,9 @@
  * @license Apache-2.0
  */
 
-\felicity\core\services\config\Config::$instance->set(
+use felicity\config\Config;
+
+Config::set(
     'test3',
     'test3value'
 );

@@ -13,11 +13,11 @@ use felicity\datamodel\ModelCollection;
 use felicity\core\models\MatchedRouteModel;
 
 /**
- * Class Config
+ * Class Routing
  */
 class Routing
 {
-    /** @var Config $instance */
+    /** @var Routing $instance */
     public static $instance;
 
     /** @var array $routes */
@@ -40,7 +40,7 @@ class Routing
     }
 
     /**
-     * Gets the config class instance
+     * Gets the Routing class instance
      * @return Routing Singleton
      */
     public static function getInstance() : Routing

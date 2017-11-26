@@ -9,7 +9,7 @@
 namespace tests\services\config;
 
 use PHPUnit\Framework\TestCase;
-use felicity\core\services\config\Config;
+use felicity\config\Config;
 
 /**
  * Class ConfigTest
@@ -21,62 +21,53 @@ class ConfigTest extends TestCase
      */
     public function testConfig()
     {
-        Config::$instance->set('testing', 'whatever')
-            ->set('thing.stuff.test1', 'asdf')
-            ->set('thing.stuff.test2', 'qwerty')
-            ->set('thing.stuff.test2', 'new test')
-            ->set('thing.stuff.test3', [
+        Config::set('testing', 'whatever')
+            ->setItem('thing.stuff.test1', 'asdf')
+            ->setItem('thing.stuff.test2', 'qwerty')
+            ->setItem('thing.stuff.test2', 'new test')
+            ->setItem('thing.stuff.test3', [
                 'arrayTest' => true,
             ]);
 
-        self::assertNull(Config::$instance->get('stuff'));
+        self::assertNull(Config::get('stuff'));
 
-        self::assertInternalType(
-            'array',
-            Config::$instance->get('thing.stuff')
-        );
+        self::assertInternalType('array', Config::get('thing.stuff'));
 
-        self::assertEquals(
-            Config::$instance->get('thing.stuff.test1'),
-            'asdf'
-        );
+        self::assertEquals(Config::get('thing.stuff.test1'), 'asdf');
+
+        self::assertEquals(Config::get('thing.stuff.test2'), 'new test');
 
         self::assertEquals(
-            Config::$instance->get('thing.stuff.test2'),
-            'new test'
-        );
-
-        self::assertEquals(
-            Config::$instance->get('thing.stuff.test3'),
             [
                 'arrayTest' => true,
-            ]
+            ],
+            Config::get('thing.stuff.test3')
         );
 
         self::assertEquals(
-            Config::$instance->get('bootstrapFileSet'),
+            Config::get('bootstrapFileSet'),
             'bootstrapFileSetTest'
         );
 
         self::assertEquals(
-            Config::$instance->get('test1'),
+            Config::get('test1'),
             'test1value'
         );
 
         self::assertEquals(
-            Config::$instance->get('test2'),
+            Config::get('test2'),
             'test2value'
         );
 
-        self::assertNull(Config::$instance->get('test3'));
+        self::assertNull(Config::get('test3'));
 
         self::assertEquals(
-            Config::$instance->get('testRecursive1'),
+            Config::get('testRecursive1'),
             'testRecursive1value'
         );
 
         self::assertEquals(
-            Config::$instance->get('testRecursive2'),
+            Config::get('testRecursive2'),
             'testRecursive2value'
         );
     }

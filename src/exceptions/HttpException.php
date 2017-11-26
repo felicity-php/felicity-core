@@ -10,8 +10,8 @@ namespace felicity\core\exceptions;
 
 use Exception;
 use Throwable;
+use felicity\config\Config;
 use felicity\core\FelicityCore;
-use felicity\core\services\config\Config;
 
 /**
  * Class HttpException
@@ -41,13 +41,13 @@ class HttpException extends Exception
 
         http_response_code($this->getCode());
 
-        $showErrors = Config::getItem('showErrors');
+        $showErrors = Config::get('showErrors');
 
         if ($showErrors && $this->getCode() !== 404) {
             throw $this;
         }
 
-        $customErrorMethod = Config::getItem(
+        $customErrorMethod = Config::get(
             "customErrorMethod{$this->getCode()}"
         );
 
@@ -57,7 +57,7 @@ class HttpException extends Exception
             return;
         }
 
-        $customErrorMethod = Config::getItem('customErrorMethod');
+        $customErrorMethod = Config::get('customErrorMethod');
 
         if (\is_callable($customErrorMethod)) {
             echo($customErrorMethod($this));

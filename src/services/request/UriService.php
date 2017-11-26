@@ -10,8 +10,8 @@ namespace felicity\core\services\request;
 
 use ReflectionException;
 use voku\helper\AntiXSS;
+use felicity\config\Config;
 use felicity\core\models\UriModel;
-use felicity\core\services\config\Config;
 
 /**
  * Class UriService
@@ -46,12 +46,12 @@ class UriService
     {
         // Get config
 
-        $processPagination = $this->config->get(
+        $processPagination = $this->config->getItem(
             'uri.pagination.process',
             true
         );
 
-        $paginationTrigger = $this->config->get(
+        $paginationTrigger = $this->config->getItem(
             'uri.pagination.trigger',
             'page'
         );

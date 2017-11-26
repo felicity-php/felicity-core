@@ -10,8 +10,8 @@ namespace felicity\core;
 
 use ReflectionException;
 use voku\helper\AntiXSS;
+use felicity\config\Config;
 use felicity\core\models\UriModel;
-use felicity\core\services\config\Config;
 use felicity\core\services\config\Routing;
 use felicity\core\services\request\UriService;
 use felicity\core\services\request\RoutingService;
@@ -30,24 +30,6 @@ class FelicityCore
         return __DIR__;
     }
 
-    /**
-     * Gets the config instance
-     * @return Config
-     */
-    public static function getConfig() : Config
-    {
-        return Config::getInstance();
-    }
-
-    /**
-     * Gets the routing instance
-     * @return Routing
-     */
-    public static function getRouting() : Routing
-    {
-        return Routing::getInstance();
-    }
-
     /** @var $uriModel */
     private static $uriModel;
 
@@ -63,7 +45,7 @@ class FelicityCore
         }
 
         $uriService = new UriService(
-            self::getConfig(),
+            Config::getInstance(),
             new AntiXSS()
         );
 
@@ -81,6 +63,6 @@ class FelicityCore
      */
     public static function getRoutingService() : RoutingService
     {
-        return new RoutingService(self::getRouting());
+        return new RoutingService(Routing::getInstance());
     }
 }
