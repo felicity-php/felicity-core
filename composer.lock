@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "4679bdbf42616d2ff57650cf1444c698",
+    "content-hash": "31f68c6f8015f474c5545147f0376579",
     "packages": [
         {
             "name": "felicity-php/felicity-config",
-            "version": "1.0.0",
+            "version": "1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/felicity-php/felicity-config.git",
-                "reference": "c07c02cd26749a3349af82ce0e58badcccbc3823"
+                "reference": "84a093a4e4bdbd339ffdbfbfa29e9a4aadf544e8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/felicity-php/felicity-config/zipball/c07c02cd26749a3349af82ce0e58badcccbc3823",
-                "reference": "c07c02cd26749a3349af82ce0e58badcccbc3823",
+                "url": "https://api.github.com/repos/felicity-php/felicity-config/zipball/84a093a4e4bdbd339ffdbfbfa29e9a4aadf544e8",
+                "reference": "84a093a4e4bdbd339ffdbfbfa29e9a4aadf544e8",
                 "shasum": ""
             },
             "require": {
@@ -27,6 +27,15 @@
                 "phpunit/phpunit": "^6.1"
             },
             "type": "library",
+            "extra": {
+                "bootstrap": [
+                    {
+                        "type": "classMethod",
+                        "class": "felicity\\config\\Bootstrap",
+                        "method": "run"
+                    }
+                ]
+            },
             "autoload": {
                 "psr-4": {
                     "felicity\\config\\": "src/"
@@ -44,7 +53,7 @@
                 }
             ],
             "description": "Easy set and get of config in PHP",
-            "time": "2017-11-26T00:05:01+00:00"
+            "time": "2017-11-26T02:32:28+00:00"
         },
         {
             "name": "felicity-php/felicity-datamodel",
@@ -1134,16 +1143,16 @@
         },
         {
             "name": "phpunit/php-file-iterator",
-            "version": "1.4.2",
+            "version": "1.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-file-iterator.git",
-                "reference": "3cc8f69b3028d0f96a9078e6295d86e9bf019be5"
+                "reference": "8ebba84e5bd74fc5fdeb916b38749016c7232f93"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-file-iterator/zipball/3cc8f69b3028d0f96a9078e6295d86e9bf019be5",
-                "reference": "3cc8f69b3028d0f96a9078e6295d86e9bf019be5",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-file-iterator/zipball/8ebba84e5bd74fc5fdeb916b38749016c7232f93",
+                "reference": "8ebba84e5bd74fc5fdeb916b38749016c7232f93",
                 "shasum": ""
             },
             "require": {
@@ -1177,7 +1186,7 @@
                 "filesystem",
                 "iterator"
             ],
-            "time": "2016-10-03T07:40:28+00:00"
+            "time": "2017-11-24T15:00:59+00:00"
         },
         {
             "name": "phpunit/php-text-template",
