@@ -13,7 +13,7 @@ use ReflectionException;
 use felicity\routing\Routing;
 use felicity\translate\Translate;
 use felicity\core\models\ArgumentsModel;
-use felicity\core\services\ConsoleOutput;
+use felicity\consoleoutput\ConsoleOutput;
 
 /**
  * Class ConsoleApp
