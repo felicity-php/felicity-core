@@ -65,7 +65,7 @@ class WebApp
     }
 
     /**
-     * Runs internal run function so we can try/catch
+     * Internal run function so we can try/catch
      * @throws ReflectionException
      * @throws HttpException
      */

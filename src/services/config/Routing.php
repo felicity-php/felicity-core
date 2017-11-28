@@ -31,6 +31,9 @@ class Routing
         // 'cli' => []
     ];
 
+    /** @var array $descriptionTranslationKeys */
+    private $descriptionTranslationKeys = [];
+
     /**
      * Bootstraps the routing class instance
      */
@@ -112,6 +115,24 @@ class Routing
     public function getRoutesArray() : array
     {
         return $this->routes;
+    }
+
+    /**
+     * Gets the description translation keys array
+     * @return array
+     */
+    public static function descriptionTranslationKeys() : array
+    {
+        return self::getInstance()->getDescriptionTranslationKeys();
+    }
+
+    /**
+     * Gets the description translation keys array
+     * @return array
+     */
+    public function getDescriptionTranslationKeys() : array
+    {
+        return $this->descriptionTranslationKeys;
     }
 
     /**
@@ -256,22 +277,43 @@ class Routing
      * Sets a cli request route
      * @param string $uri
      * @param callable $callback
+     * @param string $descriptionTranslationCategory
+     * @param string $descriptionTranslationKey
      * @return self
      */
-    public static function cli(string $uri, callable $callback) : Routing
-    {
-        return self::getInstance()->cliRequest($uri, $callback);
+    public static function cli(
+        string $uri,
+        callable $callback,
+        string $descriptionTranslationCategory = '',
+        string $descriptionTranslationKey = ''
+    ) : Routing {
+        return self::getInstance()->cliRequest(
+            $uri,
+            $callback,
+            $descriptionTranslationCategory,
+            $descriptionTranslationKey
+        );
     }
 
     /**
      * Sets an options request route
      * @param string $uri
      * @param callable $callback
+     * @param string $descriptionTranslationCategory
+     * @param string $descriptionTranslationKey
      * @return self
      */
-    public function cliRequest(string $uri, callable $callback) : Routing
-    {
+    public function cliRequest(
+        string $uri,
+        callable $callback,
+        string $descriptionTranslationCategory = '',
+        string $descriptionTranslationKey = ''
+    ) : Routing {
         $this->routes['cli'][$uri] = $callback;
+        $this->descriptionTranslationKeys[$uri] = [
+            'category' => $descriptionTranslationCategory,
+            'key' => $descriptionTranslationKey,
+        ];
         return $this;
     }
 }
