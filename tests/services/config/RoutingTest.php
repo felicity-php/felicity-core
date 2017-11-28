@@ -8,10 +8,10 @@
 
 namespace tests\services\config;
 
-use felicity\core\models\MatchedRouteModel;
+use felicity\routing\Routing;
 use PHPUnit\Framework\TestCase;
 use felicity\datamodel\ModelCollection;
-use felicity\core\services\config\Routing;
+use felicity\routing\models\MatchedRouteModel;
 
 /**
  * Class ConfigTest

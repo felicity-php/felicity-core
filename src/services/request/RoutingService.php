@@ -9,10 +9,10 @@
 namespace felicity\core\services\request;
 
 use ReflectionException;
+use felicity\routing\Routing;
 use felicity\core\models\UriModel;
 use felicity\core\models\RoutingModel;
-use felicity\core\services\config\Routing;
-use felicity\core\models\MatchedRouteModel;
+use felicity\routing\models\MatchedRouteModel;
 
 /**
  * Class RoutingService

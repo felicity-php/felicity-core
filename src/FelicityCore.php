@@ -11,8 +11,8 @@ namespace felicity\core;
 use ReflectionException;
 use voku\helper\AntiXSS;
 use felicity\config\Config;
+use felicity\routing\Routing;
 use felicity\core\models\UriModel;
-use felicity\core\services\config\Routing;
 use felicity\core\services\request\UriService;
 use felicity\core\services\request\RoutingService;
 

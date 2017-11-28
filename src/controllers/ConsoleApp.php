@@ -9,8 +9,8 @@
 namespace felicity\core\controllers;
 
 use Exception;
-use felicity\core\services\config\Routing;
 use ReflectionException;
+use felicity\routing\Routing;
 use felicity\translate\Translate;
 use felicity\core\models\ArgumentsModel;
 use felicity\core\services\ConsoleOutput;

@@ -8,8 +8,8 @@
 
 namespace tests\services\config;
 
-use PHPUnit\Framework\TestCase;
 use felicity\config\Config;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Class ConfigTest
