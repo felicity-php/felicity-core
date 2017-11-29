@@ -54,6 +54,13 @@ class WebApp
                 return;
             }
 
+            if (class_exists('Twig_Error_Runtime') &&
+                $e instanceof \Twig_Error_Runtime
+            ) {
+                $e->getPrevious()->render();
+                return;
+            }
+
             (new HttpException($e->getMessage(), $e->getCode()))->render();
         }
 

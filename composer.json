@@ -38,6 +38,11 @@
             {
                 "type": "directoryRecursive",
                 "directoryPath": "src/translations"
+            },
+            {
+                "type": "classMethod",
+                "class": "\\felicity\\core\\twig\\ThrowErrorTwigFunction",
+                "method": "add"
             }
         ]
     }
