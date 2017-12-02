@@ -8,7 +8,6 @@
 
 namespace felicity\core\services\request;
 
-use ReflectionException;
 use voku\helper\AntiXSS;
 use felicity\config\Config;
 use felicity\core\models\UriModel;

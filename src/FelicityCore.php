@@ -8,9 +8,9 @@
 
 namespace felicity\core;
 
-use ReflectionException;
 use voku\helper\AntiXSS;
 use felicity\config\Config;
+use felicity\logging\Logger;
 use felicity\routing\Routing;
 use felicity\core\models\UriModel;
 use felicity\core\services\request\UriService;
@@ -36,7 +36,6 @@ class FelicityCore
     /**
      * Get's the URI model
      * @return UriModel
-     * @throws ReflectionException
      */
     public static function getUriModel() : UriModel
     {
@@ -63,6 +62,9 @@ class FelicityCore
      */
     public static function getRoutingService() : RoutingService
     {
-        return new RoutingService(Routing::getInstance());
+        return new RoutingService(
+            Routing::getInstance(),
+            Logger::getInstance()
+        );
     }
 }

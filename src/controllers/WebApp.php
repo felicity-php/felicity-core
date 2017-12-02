@@ -10,6 +10,7 @@ namespace felicity\core\controllers;
 
 use Exception;
 use ReflectionException;
+use felicity\logging\Logger;
 use felicity\core\FelicityCore;
 use felicity\events\EventManager;
 use felicity\events\models\EventModel;
@@ -27,6 +28,12 @@ class WebApp
      */
     public function run()
     {
+        Logger::log(
+            'Starting WebApp run...',
+            Logger::LEVEL_INFO,
+            'felicityCore'
+        );
+
         EventManager::call('Felicity_WebApp_BeforeRun', new EventModel([
             'sender' => $this,
         ]));
@@ -36,6 +43,12 @@ class WebApp
         try {
             $this->innerRun();
         } catch (Exception $e) {
+            Logger::log(
+                'WebApp Exception caught, processing...',
+                Logger::LEVEL_WARNING,
+                'felicityCore'
+            );
+
             $eventModel = new EventModel([
                 'sender' => $this,
                 'params' => [
@@ -50,7 +63,14 @@ class WebApp
             }
 
             if ($e instanceof HttpException) {
+                Logger::log(
+                    "WebApp Exception is an HttpException: {$e->getCode()}",
+                    Logger::LEVEL_WARNING,
+                    'felicityCore'
+                );
+
                 $e->render();
+
                 return;
             }
 
@@ -60,12 +80,45 @@ class WebApp
                 $previous = $e->getPrevious();
 
                 if ($previous instanceof HttpException) {
+                    Logger::log(
+                        "WebApp Exception is an HttpException: {$e->getCode()}",
+                        Logger::LEVEL_WARNING,
+                        'felicityCore'
+                    );
+
                     $previous->render();
+
                     return;
                 }
             }
 
-            (new HttpException($e->getMessage(), $e->getCode()))->render();
+            $msg = $e->getMessage();
+
+            Logger::log(
+                "WebApp Exception caught: {$msg}",
+                Logger::LEVEL_ERROR,
+                'felicityCore'
+            );
+
+            Logger::log(
+                "WebApp Exception file: {$e->getFile()}",
+                Logger::LEVEL_ERROR,
+                'felicityCore'
+            );
+
+            Logger::log(
+                "WebApp Exception line: {$e->getLine()}",
+                Logger::LEVEL_ERROR,
+                'felicityCore'
+            );
+
+            Logger::log(
+                'ConsoleApp trace: ' . print_r($e->getTrace(), true),
+                Logger::LEVEL_ERROR,
+                'felicityCore'
+            );
+
+            (new HttpException($msg, $e->getCode()))->render();
         }
 
         ob_end_flush();
@@ -82,6 +135,12 @@ class WebApp
      */
     private function innerRun()
     {
+        Logger::log(
+            'WebApp matching route...',
+            Logger::LEVEL_INFO,
+            'felicityCore'
+        );
+
         $routingModel = FelicityCore::getRoutingService()->runUri(
             FelicityCore::getUriModel()
         );
@@ -100,13 +159,28 @@ class WebApp
         $hasOutput = false;
 
         if (\is_array($routingModel->responseData)) {
+            Logger::log(
+                'WebApp routing response is an array, sending json response...',
+                Logger::LEVEL_INFO,
+                'felicityCore'
+            );
+
             header('Content-type:application/json;charset=utf-8');
+
             echo(json_encode($routingModel->responseData));
+
             $hasOutput = true;
         }
 
         if (\is_string($routingModel->responseData)) {
+            Logger::log(
+                'WebApp routing response is a string, sending response...',
+                Logger::LEVEL_INFO,
+                'felicityCore'
+            );
+
             echo($routingModel->responseData);
+
             $hasOutput = true;
         }
 

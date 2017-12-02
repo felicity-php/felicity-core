@@ -9,7 +9,7 @@
 namespace felicity\core\controllers;
 
 use Exception;
-use ReflectionException;
+use felicity\logging\Logger;
 use felicity\routing\Routing;
 use felicity\translate\Translate;
 use felicity\core\models\ArgumentsModel;
@@ -26,6 +26,12 @@ class ConsoleApp
      */
     public function run(array $argv)
     {
+        Logger::log(
+            'Starting ConsoleApp run...',
+            Logger::LEVEL_INFO,
+            'felicityCore'
+        );
+
         $argumentsModel = new ArgumentsModel();
 
         $argumentsModel->addRawArgs($argv);
@@ -33,11 +39,39 @@ class ConsoleApp
         try {
             $this->innerRun($argumentsModel);
         } catch (Exception $e) {
-            $msg = Translate::get('felicityCore', 'followingExceptionCaught');
-            ConsoleOutput::write("<bold>{$msg}</bold>", 'red');
-            ConsoleOutput::write($e->getMessage(), 'red');
-            ConsoleOutput::write("File: {$e->getFile()}");
-            ConsoleOutput::write("Line: {$e->getLine()}");
+            $trans = Translate::get('felicityCore', 'followingExceptionCaught');
+            ConsoleOutput::write("<bold>{$trans}</bold>", 'red');
+
+            $msg = $e->getMessage();
+            Logger::log(
+                "ConsoleApp Exception caught: {$msg}",
+                Logger::LEVEL_ERROR,
+                'felicityCore'
+            );
+            ConsoleOutput::write($msg, 'red');
+
+            $file = $e->getFile();
+            Logger::log(
+                "ConsoleApp Exception file: {$file}",
+                Logger::LEVEL_ERROR,
+                'felicityCore'
+            );
+            ConsoleOutput::write("File: {$file}");
+
+            $line = $e->getLine();
+            Logger::log(
+                "ConsoleApp Exception line: {$line}",
+                Logger::LEVEL_ERROR,
+                'felicityCore'
+            );
+            ConsoleOutput::write("Line: {$line}");
+
+            Logger::log(
+                'ConsoleApp trace: ' . print_r($e->getTrace(), true),
+                Logger::LEVEL_ERROR,
+                'felicityCore'
+            );
+
             if ($argumentsModel->getArgument('trace') !== 'true') {
                 ConsoleOutput::write(
                     Translate::get('felicityCore', 'getTrace'),
@@ -45,6 +79,7 @@ class ConsoleApp
                 );
                 return;
             }
+
             print_r($e->getTrace());
         }
     }
@@ -55,6 +90,12 @@ class ConsoleApp
      */
     private function innerRun(ArgumentsModel $argumentsModel)
     {
+        Logger::log(
+            'ConsoleApp attempting to set unlimited time limit...',
+            Logger::LEVEL_INFO,
+            'felicityCore'
+        );
+
         // Prevent timeout (hopefully)
         @set_time_limit(0);
 
@@ -74,10 +115,22 @@ class ConsoleApp
                 continue;
             }
 
+            Logger::log(
+                "ConsoleApp matched route {$route}, running specified method...",
+                Logger::LEVEL_INFO,
+                'felicityCore'
+            );
+
             $callable($argumentsModel);
 
             return;
         }
+
+        Logger::log(
+            "ConsoleApp route {$argumentsModel->route} not found",
+            Logger::LEVEL_WARNING,
+            'felicityCore'
+        );
 
         $msg = Translate::get('felicityCore', 'commandNotFound');
         ConsoleOutput::write("<bold>{$msg}</bold>", 'red');
@@ -88,6 +141,12 @@ class ConsoleApp
      */
     private function listCommands()
     {
+        Logger::log(
+            'ConsoleApp listing available commands',
+            Logger::LEVEL_INFO,
+            'felicityCore'
+        );
+
         ConsoleOutput::write('');
 
         ConsoleOutput::write(
@@ -110,6 +169,12 @@ class ConsoleApp
         $routes = Routing::descriptionTranslationKeys();
 
         if (! $routes) {
+            Logger::log(
+                'ConsoleApp no CLI commands available',
+                Logger::LEVEL_INFO,
+                'felicityCore'
+            );
+
             ConsoleOutput::write(
                 Translate::get('felicityCore', 'noCliCommands'),
                 'yellow'

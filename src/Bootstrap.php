@@ -12,6 +12,7 @@ use RegexIterator;
 use ReflectionClass;
 use ReflectionException;
 use RecursiveRegexIterator;
+use felicity\logging\Logger;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use felicity\events\EventManager;
@@ -44,6 +45,19 @@ class Bootstrap
      */
     public function run() : Bootstrap
     {
+
+        Logger::log(
+            'Starting bootstrap run...',
+            Logger::LEVEL_INFO,
+            'felicityCore'
+        );
+
+        Logger::log(
+            'Calling event `Felicity_Bootstrap_BeforeRun`...',
+            Logger::LEVEL_INFO,
+            'felicityCore'
+        );
+
         EventManager::call('Felicity_Bootstrap_BeforeRun', new EventModel([
             'sender' => $this,
         ]));
@@ -78,9 +92,21 @@ class Bootstrap
             }
         }
 
+        Logger::log(
+            'Calling event `Felicity_Bootstrap_AfterRun`...',
+            Logger::LEVEL_INFO,
+            'felicityCore'
+        );
+
         EventManager::call('Felicity_Bootstrap_AfterRun', new EventModel([
             'sender' => $this,
         ]));
+
+        Logger::log(
+            'Bootstrap run finished',
+            Logger::LEVEL_INFO,
+            'felicityCore'
+        );
 
         return $this;
     }
@@ -95,6 +121,12 @@ class Bootstrap
         if (! file_exists($filePath)) {
             return $this;
         }
+
+        Logger::log(
+            "Processing composer file {$filePath}",
+            Logger::LEVEL_INFO,
+            'felicityCore'
+        );
 
         $json = json_decode(file_get_contents($filePath), true);
 
@@ -176,6 +208,13 @@ class Bootstrap
             return;
         }
 
+        Logger::log(
+            'Processing composer bootstrap class method ' .
+                var_export($bootstrapArrayItem, true),
+            Logger::LEVEL_INFO,
+            'felicityCore'
+        );
+
         (new $bootstrapArrayItem['class'])->{$bootstrapArrayItem['method']}();
     }
 
@@ -191,6 +230,12 @@ class Bootstrap
         }
 
         $root = $root ?? $this->projectRoot;
+
+        Logger::log(
+            "Processing composer bootstrap file {$root}",
+            Logger::LEVEL_INFO,
+            'felicityCore'
+        );
 
         include "{$root}/{$bootstrapArrayItem['filePath']}";
     }
@@ -210,6 +255,12 @@ class Bootstrap
 
         $dir = rtrim($bootstrapArrayItem['directoryPath'], '/');
 
+        Logger::log(
+            "Processing composer bootstrap directory {$dir}",
+            Logger::LEVEL_INFO,
+            'felicityCore'
+        );
+
         foreach (glob($root . "/{$dir}/*") as $file) {
             if (! is_file($file) || is_dir($file)) {
                 continue;
@@ -222,6 +273,12 @@ class Bootstrap
             ) {
                 continue;
             }
+
+            Logger::log(
+                "Processing composer bootstrap directory file {$file}",
+                Logger::LEVEL_INFO,
+                'felicityCore'
+            );
 
             include $file;
         }
@@ -242,6 +299,13 @@ class Bootstrap
 
         $root = $root ?? $this->projectRoot;
 
+        Logger::log(
+            'Processing composer bootstrap directory recursive ' .
+                $root . '/' . $bootstrapArrayItem['directoryPath'],
+            Logger::LEVEL_INFO,
+            'felicityCore'
+        );
+
         $iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator(
                 $root . '/' . $bootstrapArrayItem['directoryPath']
@@ -258,6 +322,12 @@ class Bootstrap
             if (! isset($item[0]) || ! is_file($item[0])) {
                 continue;
             }
+
+            Logger::log(
+                "Processing composer bootstrap recursive directory file {$item[0]}",
+                Logger::LEVEL_INFO,
+                'felicityCore'
+            );
 
             include $item[0];
         }

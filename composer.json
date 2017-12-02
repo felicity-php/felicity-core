@@ -28,7 +28,8 @@
         "voku/anti-xss": "^3.1",
         "felicity-php/felicity-translate": "^1.0",
         "felicity-php/felicity-routing": "^1.0.1",
-        "felicity-php/felicity-console-output": "^1.0"
+        "felicity-php/felicity-console-output": "^1.0",
+        "felicity-php/felicity-logging": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.1",
