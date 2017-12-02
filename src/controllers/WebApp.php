@@ -57,8 +57,12 @@ class WebApp
             if (class_exists('Twig_Error_Runtime') &&
                 $e instanceof \Twig_Error_Runtime
             ) {
-                $e->getPrevious()->render();
-                return;
+                $previous = $e->getPrevious();
+
+                if ($previous instanceof HttpException) {
+                    $previous->render();
+                    return;
+                }
             }
 
             (new HttpException($e->getMessage(), $e->getCode()))->render();
