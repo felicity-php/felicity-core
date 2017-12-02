@@ -40,7 +40,6 @@ class UriService
      * @param string $uri
      * @param string $requestMethod
      * @return UriModel
-     * @throws ReflectionException
      */
     public function getUriModel(string $uri, string $requestMethod = 'get') : UriModel
     {

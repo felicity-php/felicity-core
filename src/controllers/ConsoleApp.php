@@ -23,7 +23,6 @@ class ConsoleApp
     /**
      * Runs the application
      * @param array $argv
-     * @throws  ReflectionException
      */
     public function run(array $argv)
     {

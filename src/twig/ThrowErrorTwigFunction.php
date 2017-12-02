@@ -17,7 +17,6 @@ class ThrowErrorTwigFunction
 {
     /**
      * Add the twig function
-     * @throws HttpException
      */
     public function add()
     {

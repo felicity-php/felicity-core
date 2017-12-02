@@ -28,7 +28,6 @@ class Bootstrap
 
     /**
      * Bootstrap constructor
-     * @throws ReflectionException
      */
     public function __construct()
     {
