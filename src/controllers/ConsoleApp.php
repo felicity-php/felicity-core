@@ -12,6 +12,8 @@ use Exception;
 use felicity\logging\Logger;
 use felicity\routing\Routing;
 use felicity\translate\Translate;
+use felicity\events\EventManager;
+use felicity\events\models\EventModel;
 use felicity\core\models\ArgumentsModel;
 use felicity\consoleoutput\ConsoleOutput;
 
@@ -23,6 +25,7 @@ class ConsoleApp
     /**
      * Runs the application
      * @param array $argv
+     * @throws \ReflectionException
      */
     public function run(array $argv)
     {
@@ -32,13 +35,51 @@ class ConsoleApp
             'felicityCore'
         );
 
+        Logger::log(
+            'Calling event `Felicity_ConsoleApp_BeforeRun`...',
+            Logger::LEVEL_INFO,
+            'felicityCore'
+        );
+
+        Logger::log(
+            'Calling event `Felicity_ConsoleApp_BeforeRun`...',
+            Logger::LEVEL_INFO,
+            'felicityCore'
+        );
+
         $argumentsModel = new ArgumentsModel();
 
         $argumentsModel->addRawArgs($argv);
 
+        EventManager::call('Felicity_ConsoleApp_BeforeRun', new EventModel([
+            'sender' => $this,
+            'params' => [
+                'argumentsModel' => $argumentsModel,
+            ]
+        ]));
+
         try {
             $this->innerRun($argumentsModel);
         } catch (Exception $e) {
+            Logger::log(
+                'ConsoleApp Exception caught, processing...',
+                Logger::LEVEL_WARNING,
+                'felicityCore'
+            );
+
+            $eventModel = new EventModel([
+                'sender' => $this,
+                'params' => [
+                    'exception' => $e,
+                ],
+            ]);
+
+            EventManager::call('Felicity_ConsoleApp_Exception', $eventModel);
+
+            if (! $eventModel->performAction) {
+                return;
+            }
+
             $trans = Translate::get('felicityCore', 'followingExceptionCaught');
             ConsoleOutput::write("<bold>{$trans}</bold>", 'red');
 
@@ -82,6 +123,16 @@ class ConsoleApp
 
             print_r($e->getTrace());
         }
+
+        Logger::log(
+            'Calling event `Felicity_ConsoleApp_AfterRun`...',
+            Logger::LEVEL_INFO,
+            'felicityCore'
+        );
+
+        EventManager::call('Felicity_ConsoleApp_AfterRun', new EventModel([
+            'sender' => $this
+        ]));
     }
 
     /**
