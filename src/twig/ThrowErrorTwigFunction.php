@@ -25,7 +25,7 @@ class ThrowErrorTwigFunction
         }
 
         \felicity\twig\Twig::get()->addFunction(
-            new \Twig_function('throwError', function ($code = 404, $msg = '') {
+            new \Twig\TwigFunction('throwError', function ($code = 404, $msg = '') {
                 throw new HttpException($msg, $code);
             })
         );
